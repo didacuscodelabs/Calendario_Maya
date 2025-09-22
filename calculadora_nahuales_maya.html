@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Nahuales Maya</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Papyrus', 'Chalkduster', 'Bradley Hand', cursive;
+            background: radial-gradient(ellipse at center, #0a0a0a 0%, #1a0e0a 30%, #2d1810 60%, #8b4513 100%);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 98, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 69, 19, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(212, 175, 55, 0.2) 0%, transparent 50%);
+            min-height: 100vh;
+            color: #f4e4bc;
+            padding: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(26, 14, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(212, 175, 55, 0.3),
+                0 0 50px rgba(212, 175, 55, 0.1);
+            border: 2px solid rgba(139, 69, 19, 0.6);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, #8b4513 0%, #d4af37 50%, #cd853f 100%);
+            border-radius: 15px;
+            box-shadow: 
+                inset 0 2px 10px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(212, 175, 55, 0.4);
+            border: 3px solid rgba(139, 69, 19, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(0, 0, 0, 0.1) 10px,
+                rgba(0, 0, 0, 0.1) 12px
+            );
+            pointer-events: none;
+        }
+        
+        .header h1 {
+            font-size: 2.8em;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            margin-bottom: 15px;
+            color: #f4e4bc;
+            font-weight: bold;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .calculadoras {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .seccion {
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.3) 0%, rgba(26, 14, 10, 0.8) 100%);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(212, 175, 55, 0.2);
+        }
+        
+        .seccion h2 {
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.4em;
+        }
+        
+        .fecha-input {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .fecha-input input {
+            padding: 12px;
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1em;
+            backdrop-filter: blur(5px);
+        }
+        
+        .fecha-input input:focus {
+            outline: none;
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #8b4513 0%, #d4af37 50%, #cd853f 100%);
+            color: #f4e4bc;
+            border: 2px solid rgba(139, 69, 19, 0.8);
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            font-family: 'Papyrus', cursive;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(212, 175, 55, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(212, 175, 55, 0.5),
+                inset 0 1px 0 rgba(212, 175, 55, 0.4);
+            background: linear-gradient(135deg, #a0522d 0%, #f4e4bc 50%, #daa520 100%);
+        }
+        
+        .resultado {
+            margin-top: 20px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(139, 69, 19, 0.3) 100%);
+            border-radius: 15px;
+            border: 3px solid rgba(212, 175, 55, 0.6);
+            min-height: 80px;
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(212, 175, 55, 0.3);
+        }
+        
+        .nahual-nombre {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .nahual-numero {
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .nahual-significado {
+            font-size: 1em;
+            line-height: 1.6;
+            text-align: justify;
+        }
+        
+        .calendario-hoy {
+            text-align: center;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(139, 69, 19, 0.4) 0%, rgba(26, 14, 10, 0.9) 100%);
+            border-radius: 20px;
+            border: 3px solid rgba(212, 175, 55, 0.7);
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(212, 175, 55, 0.2),
+                inset 0 1px 0 rgba(212, 175, 55, 0.2);
+        }
+        
+        .calendario-hoy h3 {
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        @media (max-width: 768px) {
+            .calculadoras {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+        
+        .glifo-maya {
+            font-size: 4em;
+            text-align: center;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.6));
+        }
+        
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌅 Calculadora de Nahuales Maya 🌅</h1>
+            <p>Descubre tu nahual de nacimiento y el nahual del día según el calendario sagrado maya de 260 días</p>
+        </div>
+        
+        <div class="calendario-hoy">
+            <h3>Nahual del Día de Hoy - Lunes</h3>
+            <div id="nahualHoy"></div>
+        </div>
+        
+        <div class="calculadoras">
+            <div class="seccion">
+                <h2>🎂 Tu Nahual de Nacimiento</h2>
+                <div class="fecha-input">
+                    <input type="date" id="fechaNacimiento" placeholder="Selecciona tu fecha de nacimiento">
+                    <button class="btn" onclick="calcularNahualNacimiento()">Calcular Mi Nahual</button>
+                </div>
+                <div id="resultadoNacimiento" class="resultado" style="display: none;">
+                    <div class="nahual-loading">Selecciona tu fecha de nacimiento para descubrir tu nahual...</div>
+                </div>
+            </div>
+            
+            <div class="seccion">
+                <h2>📅 Nahual de Cualquier Día</h2>
+                <div class="fecha-input">
+                    <input type="date" id="fechaDia" placeholder="Selecciona una fecha">
+                    <button class="btn" onclick="calcularNahualDia()">Consultar Fecha</button>
+                </div>
+                <div id="resultadoDia" class="resultado" style="display: none;">
+                    <div class="nahual-loading">Selecciona una fecha para consultar su nahual...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Glisquiera que tuviera colores y tipografia de la cultura maya colores y tipografia más influidas por la indumendariamayafos y símbolos para cada nahual
+        const glifos = {
+            'Imox': '🐊',
+            'Iq\'': '🌪️', 
+            'Aq\'ab\'al': '🌅',
+            'K\'at': '🕸️',
+            'Kan': '🐍',
+            'Kame': '💀',
+            'Kej': '🦌',
+            'Q\'anil': '🌱',
+            'Toj': '🔥',
+            'Tz\'i\'': '🐕',
+            'B\'atz\'': '🐒',
+            'E': '🛤️',
+            'Aj': '🏠',
+            'I\'x': '🐆',
+            'Tz\'ikin': '🦅',
+            'Ajmaq': '🦉',
+            'N\'oj': '🧠',
+            'Tijax': '🗡️',
+            'Kawoq': '⛈️',
+            'Ajpu': '☀️'
+        };
+        const nahuales = [
+            'Imox', 'Iq\'', 'Aq\'ab\'al', 'K\'at', 'Kan', 
+            'Kame', 'Kej', 'Q\'anil', 'Toj', 'Tz\'i\'',
+            'B\'atz\'', 'E', 'Aj', 'I\'x', 'Tz\'ikin',
+            'Ajmaq', 'N\'oj', 'Tijax', 'Kawoq', 'Ajpu'
+        ];
+
+        // Significados y descripciones de cada nahual
+        const significados = {
+            'Imox': {
+                significado: 'Agua, Lluvia, Cocodrilo',
+                descripcion: 'Simboliza la locura divina, la intuición y los sueños. Las personas nacidas bajo este nahual son sensibles, intuitivas y tienen una conexión especial con el mundo espiritual. Representan la creatividad y la imaginación desbordante.',
+                cualidades: 'Intuitivo, creativo, sensible, visionario',
+                elemento: 'Agua'
+            },
+            'Iq\'': {
+                significado: 'Viento, Aire, Espíritu',
+                descripcion: 'Representa el viento, la comunicación y el espíritu. Quienes nacen en este día son comunicadores naturales, libres como el viento y portadores de mensajes importantes. Simbolizan la libertad y el movimiento.',
+                cualidades: 'Comunicativo, libre, espiritual, mensajero',
+                elemento: 'Aire'
+            },
+            'Aq\'ab\'al': {
+                significado: 'Amanecer, Alba, Luz Nueva',
+                descripcion: 'Simboliza el amanecer y los nuevos comienzos. Las personas de este nahual son pioneras, traen nueva luz a las situaciones oscuras y tienen la capacidad de ver oportunidades donde otros no las ven.',
+                cualidades: 'Pionero, optimista, renovador, visionario',
+                elemento: 'Luz'
+            },
+            'K\'at': {
+                significado: 'Red, Enredo, Problema',
+                descripcion: 'Representa los problemas y las soluciones. Quienes nacen bajo este signo tienen la habilidad especial de desenredar situaciones complejas y encontrar soluciones creativas a los conflictos.',
+                cualidades: 'Solucionador, analítico, persistente, estratégico',
+                elemento: 'Tierra'
+            },
+            'Kan': {
+                significado: 'Serpiente, Sabiduría, Kundalini',
+                descripcion: 'Simboliza la serpiente emplumada, la sabiduría ancestral y el poder sexual-espiritual. Las personas Kan son sabias, poderosas y tienen una conexión profunda con los misterios de la vida.',
+                cualidades: 'Sabio, poderoso, misterioso, sanador',
+                elemento: 'Fuego'
+            },
+            'Kame': {
+                significado: 'Muerte, Transformación, Ancestros',
+                descripcion: 'Representa la muerte como transformación, no como fin. Quienes nacen en este día son transformadores naturales, ayudan a otros en procesos de cambio y mantienen viva la conexión con los ancestros.',
+                cualidades: 'Transformador, profundo, ancestral, renovador',
+                elemento: 'Tierra'
+            },
+            'Kej': {
+                significado: 'Venado, Naturaleza, Libertad',
+                descripcion: 'Simboliza al venado, la conexión con la naturaleza y la libertad salvaje. Las personas Kej son libres, aman la naturaleza y tienen una gracia natural en sus movimientos y decisiones.',
+                cualidades: 'Libre, natural, grácil, independiente',
+                elemento: 'Tierra'
+            },
+            'Q\'anil': {
+                significado: 'Semilla, Crecimiento, Fertilidad',
+                descripcion: 'Representa la semilla que contiene todo el potencial. Quienes nacen bajo este nahual son fértiles en ideas, proyectos y tienen la capacidad de hacer crecer todo lo que tocan.',
+                cualidades: 'Fértil, potencial, creativo, próspero',
+                elemento: 'Tierra'
+            },
+            'Toj': {
+                significado: 'Fuego, Pago, Ofrenda',
+                descripcion: 'Simboliza el fuego sagrado y las ofrendas espirituales. Las personas Toj son generosas, espirituales y tienen la misión de mantener encendido el fuego sagrado de la tradición.',
+                cualidades: 'Generoso, espiritual, tradicionalista, devoto',
+                elemento: 'Fuego'
+            },
+            'Tz\'i\'': {
+                significado: 'Perro, Lealtad, Autoridad',
+                descripcion: 'Representa al perro guardián, la lealtad y la autoridad justa. Quienes nacen bajo este signo son leales, protectores y tienen una autoridad natural que inspira confianza.',
+                cualidades: 'Leal, protector, autoritario, confiable',
+                elemento: 'Tierra'
+            },
+            'B\'atz\'': {
+                significado: 'Mono, Arte, Tejido',
+                descripcion: 'Simboliza el arte, la creatividad y el tejido de la vida. Las personas B\'atz\' son artistas naturales, creativas y tienen la habilidad de tejer hermosas relaciones y proyectos.',
+                cualidades: 'Artístico, creativo, social, armonioso',
+                elemento: 'Aire'
+            },
+            'E': {
+                significado: 'Camino, Destino, Guía',
+                descripcion: 'Representa el camino espiritual y el destino. Quienes nacen en este día son guías naturales, conocen los senderos de la vida y ayudan a otros a encontrar su camino.',
+                cualidades: 'Guía, sabio, orientador, espiritual',
+                elemento: 'Tierra'
+            },
+            'Aj': {
+                significado: 'Caña, Hogar, Familia',
+                descripcion: 'Simboliza la caña sagrada, el hogar y la familia. Las personas Aj son protectoras del hogar, valoran la familia y tienen la capacidad de crear espacios sagrados y armoniosos.',
+                cualidades: 'Familiar, protector, hogareño, constructor',
+                elemento: 'Tierra'
+            },
+            'I\'x': {
+                significado: 'Jaguar, Poder, Energía Femenina',
+                descripcion: 'Representa al jaguar, el poder femenino y la magia. Quienes nacen bajo este nahual son poderosos, mágicos y tienen una conexión especial con las energías terrestres y lunares.',
+                cualidades: 'Poderoso, mágico, femenino, protector',
+                elemento: 'Tierra'
+            },
+            'Tz\'ikin': {
+                significado: 'Pájaro, Libertad, Visión',
+                descripcion: 'Simboliza a las aves, la libertad de vuelo y la visión desde las alturas. Las personas Tz\'ikin son visionarias, libres y tienen la capacidad de ver las cosas desde una perspectiva elevada.',
+                cualidades: 'Visionario, libre, elevado, perspicaz',
+                elemento: 'Aire'
+            },
+            'Ajmaq': {
+                significado: 'Búho, Perdón, Reconciliación',
+                descripcion: 'Representa al búho sabio, el perdón y la reconciliación. Quienes nacen en este día tienen la sabiduría para perdonar, reconciliar diferencias y sanar heridas emocionales.',
+                cualidades: 'Sabio, reconciliador, sanador, perdonador',
+                elemento: 'Aire'
+            },
+            'N\'oj': {
+                significado: 'Sabiduría, Conocimiento, Mente',
+                descripcion: 'Simboliza la sabiduría pura, el conocimiento y la mente brillante. Las personas N\'oj son intelectuales, sabias y tienen una capacidad excepcional para el aprendizaje y la enseñanza.',
+                cualidades: 'Intelectual, sabio, estudioso, maestro',
+                elemento: 'Aire'
+            },
+            'Tijax': {
+                significado: 'Cuchillo, Corte, Sanación',
+                descripcion: 'Representa el cuchillo de pedernal, el corte que sana y la cirugía espiritual. Quienes nacen bajo este nahual son sanadores que pueden "cortar" las enfermedades y los problemas de raíz.',
+                cualidades: 'Sanador, cirujano espiritual, preciso, valiente',
+                elemento: 'Piedra'
+            },
+            'Kawoq': {
+                significado: 'Tormenta, Poder, Fuerza',
+                descripcion: 'Simboliza la tormenta, el rayo y el poder natural. Las personas Kawoq son poderosas como las tormentas, pueden limpiar ambientes negativos y traer renovación después de la destrucción.',
+                cualidades: 'Poderoso, renovador, limpiador, fuerte',
+                elemento: 'Tormenta'
+            },
+            'Ajpu': {
+                significado: 'Señor, Sol, Guerrero',
+                descripcion: 'Representa al señor solar, el guerrero de la luz y la máxima autoridad espiritual. Quienes nacen en este día son líderes naturales, guerreros de la luz y portadores de la sabiduría solar.',
+                cualidades: 'Líder, guerrero, solar, sabio',
+                elemento: 'Fuego'
+            }
+        };
+
+        // Fecha de referencia del calendario maya (correlación GMT)
+        // Hoy 22 de septiembre 2025 es 8 Tijax
+        const fechaReferencia = new Date('2025-09-22'); // Hoy domingo
+        const nahualReferencia = 17; // Tijax (posición en el array)
+        const numeroReferencia = 8;
+
+        function calcularNahual(fecha) {
+            // Calcular días de diferencia desde la fecha de referencia
+            const diferenciaDias = Math.floor((fecha - fechaReferencia) / (1000 * 60 * 60 * 24));
+            
+            // Calcular posición en el ciclo de 260 días
+            let posicionCiclo = diferenciaDias % 260;
+            if (posicionCiclo < 0) posicionCiclo += 260;
+            
+            // Calcular nahual (ciclo de 20)
+            let nahualIndex = (nahualReferencia + posicionCiclo) % 20;
+            
+            // Calcular número (ciclo de 13)
+            let numero = ((numeroReferencia - 1 + posicionCiclo) % 13) + 1;
+            
+            const nahualNombre = nahuales[nahualIndex];
+            
+            return {
+                nahual: nahualNombre,
+                numero: numero,
+                significado: significados[nahualNombre]
+            };
+        }
+
+        function mostrarResultado(elementId, datos) {
+            const elemento = document.getElementById(elementId);
+            const sig = datos.significado;
+            const glifo = glifos[datos.nahual];
+            
+            elemento.innerHTML = `
+                <div class="glifo-maya">${glifo}</div>
+                <div class="nahual-nombre">${datos.numero} ${datos.nahual}</div>
+                <div class="nahual-numero"><strong>Significado:</strong> ${sig.significado}</div>
+                <div class="nahual-significado">
+                    <p><strong>Descripción:</strong> ${sig.descripcion}</p>
+                    <p><strong>Cualidades:</strong> ${sig.cualidades}</p>
+                    <p><strong>Elemento:</strong> ${sig.elemento}</p>
+                </div>
+            `;
+            elemento.style.display = 'block';
+        }
+
+        function calcularNahualNacimiento() {
+            const fecha = document.getElementById('fechaNacimiento').value;
+            if (!fecha) {
+                alert('Por favor selecciona tu fecha de nacimiento');
+                return;
+            }
+            
+            const fechaObj = new Date(fecha + 'T00:00:00');
+            const resultado = calcularNahual(fechaObj);
+            mostrarResultado('resultadoNacimiento', resultado);
+        }
+
+        function calcularNahualDia() {
+            const fecha = document.getElementById('fechaDia').value;
+            if (!fecha) {
+                alert('Por favor selecciona una fecha');
+                return;
+            }
+            
+            const fechaObj = new Date(fecha + 'T00:00:00');
+            const resultado = calcularNahual(fechaObj);
+            mostrarResultado('resultadoDia', resultado);
+        }
+
+        function mostrarNahualHoy() {
+            const hoy = new Date();
+            const resultado = calcularNahual(hoy);
+            const elemento = document.getElementById('nahualHoy');
+            const glifo = glifos[resultado.nahual];
+            
+            elemento.innerHTML = `
+                <div class="glifo-maya">${glifo}</div>
+                <div class="nahual-nombre">${resultado.numero} ${resultado.nahual}</div>
+                <p style="margin-top: 15px; font-size: 1.1em;">${resultado.significado.significado}</p>
+                <p style="margin-top: 10px; opacity: 0.9;">${resultado.significado.cualidades}</p>
+            `;
+        }
+
+        // Cargar el nahual del día al iniciar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            mostrarNahualHoy();
+            
+            // Establecer la fecha de hoy como predeterminada en el segundo campo
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('fechaDia').value = hoy;
+        });
+    </script>
+</body>
+</html>
